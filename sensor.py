@@ -1,3 +1,4 @@
+# coding=utf-8
 import requests, json, re, datetime
 from homeassistant.helpers.entity import Entity
 
@@ -70,9 +71,18 @@ class RenoWebSensor(Entity):
 	def device_state_attributes(self):
 		"""Returns the state attributes."""
 		if not self._info:
-			return {}
+			return {
+				ATTR_NEXT_DATE: -1,
+				ATTR_DAYS: -1
+			}
 		
 		nextDate = self._info[self._name]
+		if not nextDate:
+			return {
+				ATTR_NEXT_DATE: -1,
+				ATTR_DAYS: -1
+			}
+		
 		today = datetime.datetime.today().replace(hour=0, minute=0, second=0, microsecond=0)
 		delta = nextDate - today
 		return {
